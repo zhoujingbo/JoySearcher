@@ -1,0 +1,123 @@
+<?xml version="1.0"?>
+
+<project name="joycrawler" default="jar" basedir=".">
+	<description>
+        Joycrawler, A web spider for hadoop application
+    </description>
+
+	<property name="name" value="joycrawler" />
+	<property name="version" value="0.13.3" />
+	<property name="final.name" value="${name}-${version}" />
+
+	<property name="lib" value="lib" />
+	<property name="src" value="src" />
+	<property name="dist" value="./" />
+	<property name="dest" value="build" />
+
+	<!-- The compilation classpath -->
+	<path id="classpath">
+		<fileset dir="${lib}">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+
+
+	<!-- ================================= 
+          target: jar              
+         ================================= -->
+	<target name="jar" depends=" compile" description="make joycrawler jar">
+		<mkdir dir="${dist}" />
+		<jar jarfile="${dist}/${final.name}.jar" basedir="${dest}">
+			<manifest>
+				<section name="joycrawler">
+					<attribute name="Implementation-Title" value="joycrawler" />
+					<attribute name="Implementation-Version" value="${version}" />
+					<attribute name="Implementation-Vendor" value="Jeremy Chow(coderplay@gmail.com)" />
+				</section>
+			</manifest>
+		</jar>
+	</target>
+	
+	<!-- - - - - - - - - - - - - - - - - - 
+          target: rank                      
+         - - - - - - - - - - - - - - - - - -->
+	<target name="rank" depends="compile">
+       <java classname="org.joy.pagerank.RankDriver" maxmemory="1000m" fork="true">
+         <classpath>
+           <pathelement location="./build/"/>
+		   <pathelement location="./conf/"/>
+           <path refid="classpath"/>
+         </classpath>
+       </java>
+	</target>
+
+	<!-- - - - - - - - - - - - - - - - - - 
+          target: crawler                      
+         - - - - - - - - - - - - - - - - - -->
+	<target name="crawler" depends="compile">
+       <java classname="org.joy.crawler.Crawler" maxmemory="1000m" fork="true">
+         <arg value="seeds.txt"/>
+		 <arg value="15"/>
+         <classpath>
+           <pathelement location="./build/"/>
+		   <pathelement location="./conf/"/>
+           <path refid="classpath"/>
+         </classpath>
+       </java>
+	</target>
+	
+	<!-- - - - - - - - - - - - - - - - - - 
+        target: example                      
+    - - - - - - - - - - - - - - - - - -->
+	<target name="example" depends="compile">
+       <java classname="org.joy.crawler.example.ExtractorDriver" maxmemory="1000m" fork="true">
+         <classpath>
+           <pathelement location="./build/"/>
+		   <pathelement location="./conf/"/>
+           <path refid="classpath"/>
+         </classpath>
+       </java>
+	</target>
+	
+	<!-- - - - - - - - - - - - - - - - - - 
+          target: run                      
+         - - - - - - - - - - - - - - - - - -->
+	<target name="run" depends="compile">
+        <java classname="org.joy.crawler.Crawler" maxmemory="1000m" fork="true">
+         <arg value="seeds.txt"/>
+		 <arg value="15"/>
+         <classpath>
+           <pathelement location="./build/"/>
+		   <pathelement location="./conf/"/>
+           <path refid="classpath"/>
+         </classpath>
+        </java>
+	   
+	    <java classname="org.joy.pagerank.RankDriver" maxmemory="1000m" fork="true">
+         <classpath>
+           <pathelement location="./build/"/>
+		   <pathelement location="./conf/"/>
+           <path refid="classpath"/>
+         </classpath>
+       </java>
+	</target>
+
+	
+	<!-- - - - - - - - - - - - - - - - - - 
+          target: compile                      
+         - - - - - - - - - - - - - - - - - -->
+	<target name="compile">
+		<mkdir dir="${dest}" />
+		<javac srcdir="${src}" destdir="${dest}" encoding="utf-8" debug="true">
+			<classpath refid="classpath" />
+		</javac>
+	</target>
+
+	<!-- - - - - - - - - - - - - - - - - - 
+          target: clean                      
+         - - - - - - - - - - - - - - - - - -->
+	<target name="clean">
+		<delete dir="${dest}" />
+		<delete dir="${dist}" />
+	</target>
+</project>

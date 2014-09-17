@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<!-- Put site-specific property overrides in this file. -->
+
+<configuration>
+<property>
+  <name>org.joy.crawler.regEx</name>
+    <value>http://(\w+\.)*comp.nus.edu.sg/.*</value>
+  <description>the regular expression that all the URL we crawled must match</description>
+</property>
+
+<property>
+  <name>org.joy.crawler.suffix.disallow</name>
+  <value>jpg;doc;pdf;gif;bmp;xls;ppt</value>
+  <description>the suffix that should not appear at the end of all crawling url</description>
+</property>
+
+<property>
+  <name>org.joy.crawler.dir</name>
+  <value>crawler/</value>
+  <description>the crawler's work directory</description>
+</property>
+
+<property>
+  <name>org.joy.crawler.worker</name>
+  <value>15</value>
+  <description>number of threads we use to crawl the web</description>
+</property>
+</configuration>
